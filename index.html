@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="main.js"></script> 
+  <link rel="stylesheet" href="style.css">   
+  <title>Linked Smart Object Replacer</title>
+  <!-- <link rel="stylesheet" href="https://unpkg.com/@spectrum-web-components/textarea/sp-textarea.css"> -->
+  <!-- <link rel="stylesheet" href="https://unpkg.com/@spectrum-web-components/styles/vars.css"> -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #layers {
+      margin-top: 20px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 5px 0;
+    }
+    sp-textarea {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Linked Smart Object Replacer</h1>
+
+  <!-- sp-textarea for entering image paths -->
+  <sp-textarea
+    id="imageURLs"
+    label="Enter image paths (one per line):"
+    placeholder="Example: E:/images/1.jpg"
+    rows="10"
+    resize="vertical">
+  </sp-textarea>
+
+  <!-- Replace Layers button -->
+  <button id="btnReplace">Replace Linked Layers</button>
+
+  <!-- Display layer names -->
+  <h2>Layer Names:</h2>
+  <div id="layers"></div>
+
+  <!-- Include JS -->
+  <script type="module" src="index.js"></script>
+</body>
+</html>

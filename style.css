@@ -1,0 +1,29 @@
+body {
+    color: rgb(177, 177, 177);
+    padding: 0 16px;
+  }
+  li:before {
+    content: '• ';
+    width: 3em;
+  }
+
+  #layers {
+    border: 1px solid #d1d1d1;
+    border-radius: 4px;
+    padding: 16px;
+  }
+
+  #btnPopulate {
+    color: black;
+    background-color: bisque;
+  }
+
+  #textarea {
+     resize: none; /* 禁止浏览器默认的调整大小功能 */
+     overflow: hidden; /* 隐藏超出部分 */
+     padding: 5px; /* 为了更好的视觉效果 */
+     box-sizing: border-box; /* 确保 padding 和 border 不会增加元素的总宽度和高度 */
+     min-height: 50px; /* 设置最小高度 */
+     width:100%
+  }
+  
