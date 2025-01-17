@@ -13,11 +13,11 @@ SortByNumericName(paths) {
         ; i 为当前循环的索引，路径为 path1
         for j, path2 in paths {
             ; 提取文件名中的数字部分并转换为整数
-            numA := Floor(ExtractNumberFromFileName(path1))
-            numB := Floor(ExtractNumberFromFileName(path2))
+            numA := Integer(ExtractNumberFromFileName(path1))
+            numB := Integer(ExtractNumberFromFileName(path2))
             
             ; 如果路径1的数字大于路径2的数字，则交换
-            if (numA < numB) {
+            if (numA > numB) {
                 ; 交换位置
                 temp := paths[i]
                 paths[i] := paths[j]
@@ -36,6 +36,18 @@ ExtractNumberFromFileName(filePath) {
 }
 
 ; 获取当前鼠标聚焦所在目录的所有 .lnk 文件目标路径
+
+Array.Prototype.DefineProp('Reverse', {Call:(this) => __reverse(this)})
+
+; Function associated with the reverse method
+__reverse(this) {
+    loop Floor(this.Length / 2)
+        temp := this[A_Index]
+        ,last := this.Length - (A_Index - 1)
+        ,this[A_Index] := this[last]
+        ,this[last] := temp
+}
+
 GetAllLnkTargetsUnderMouse() {
     try {
         folderPath := GetFocusedFolder()
@@ -58,6 +70,7 @@ GetAllLnkTargetsUnderMouse() {
 
         ; 按文件路径名中的数字部分排序 .lnk 文件
         SortedLnkFiles := SortByNumericName(LnkFiles)
+        SortedLnkFiles.Reverse()
 
         ; 获取排序后的所有 .lnk 文件的目标路径
         TargetPaths := []
