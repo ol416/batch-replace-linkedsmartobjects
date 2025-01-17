@@ -1,7 +1,7 @@
 {
-  "name": "uxp-template-ps-starter",
+  "name": "batch-replace-linkedsmartobjects",
   "version": "1.0.0",
-  "description": "Starter template for creating Adobe UXP based-Photoshop plugin.",
-  "author": "Adobe Inc",
-  "license": "Apache-2.0"
+  "description": "批量替换链接的智能对象",
+  "author": "ol416",
+  "license": "MIT"
 }
