@@ -3,7 +3,6 @@
 ; 快捷键设置为 Ctrl+Alt+L
 ^!l::GetAllLnkTargetsUnderMouse()
 
-
 ; 按文件名中的数字部分排序
 SortByNumericName(paths) {
     ; 获取数组的长度
@@ -23,8 +22,6 @@ SortByNumericName(paths) {
                 temp := paths[i]
                 paths[i] := paths[j]
                 paths[j] := temp
-
-                ; 输出调试信息（可选）
             }
         }
     }
@@ -37,7 +34,6 @@ ExtractNumberFromFileName(filePath) {
     RegExMatch(RegExReplace(filePath, ".*\\(.*)\.(.*)", "$1"), "\d+", &OutNumber)
     return OutNumber[] ? OutNumber[] : 0  ; 如果没有找到数字，返回 0
 }
-
 
 ; 获取当前鼠标聚焦所在目录的所有 .lnk 文件目标路径
 GetAllLnkTargetsUnderMouse() {
@@ -60,9 +56,12 @@ GetAllLnkTargetsUnderMouse() {
             return
         }
 
-        ; 获取所有 .lnk 文件的目标路径
+        ; 按文件路径名中的数字部分排序 .lnk 文件
+        SortedLnkFiles := SortByNumericName(LnkFiles)
+
+        ; 获取排序后的所有 .lnk 文件的目标路径
         TargetPaths := []
-        for LnkFile in LnkFiles {
+        for LnkFile in SortedLnkFiles {
             TargetPath := GetLnkTarget(LnkFile)
             OutputDebug TargetPath
 
@@ -70,10 +69,9 @@ GetAllLnkTargetsUnderMouse() {
                 TargetPaths.Push(TargetPath)
             }
         }
-        SortedPaths := SortByNumericName(TargetPaths)
 
         ; 将路径信息合并并放入剪贴板
-        A_Clipboard := StrJoin("`n", SortedPaths)
+        A_Clipboard := StrJoin("`n", TargetPaths)
         MsgBox("已将以下目标路径复制到剪贴板：`n`n" . A_Clipboard, "完成")
     } catch Error as e {
         MsgBox("发生错误：`n" . e.Message, "错误", "OK")
