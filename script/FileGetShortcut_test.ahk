@@ -84,7 +84,7 @@ GetAllLnkTargetsUnderMouse() {
         }
 
         ; 将路径信息合并并放入剪贴板
-        A_Clipboard := StrJoin("`n", TargetPaths)
+        A_Clipboard := StrJoin("`r`n", TargetPaths)
         MsgBox("已将以下目标路径复制到剪贴板：`n`n" . A_Clipboard, "完成")
     } catch Error as e {
         MsgBox("发生错误：`n" . e.Message, "错误", "OK")
