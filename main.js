@@ -124,7 +124,7 @@ const replaceLinkedLayersByName = async (layerNames, imagePaths) => {
   if (imagePaths.length > validLayers.length) {
     app.showAlert("提供的图片多于匹配的图层，部分图片将被忽略。");
   }
-
+  let progressList = [];
   await executeAsModal(async () => {
     for (let i = 0; i < Math.min(imagePaths.length, validLayers.length); i++) {
       let layer = validLayers[i];
@@ -140,48 +140,44 @@ const replaceLinkedLayersByName = async (layerNames, imagePaths) => {
       }
 
       console.log(`Layer with ID ${layer.id} selected successfully.`);
+      progressList.push(`图层: ${layer.name} 替换为: ${imagePaths[i]}`);
       await replaceLinkedSmartObject(layer.id, imagePaths[i]);
+      // 更新转换过程
     }
   }, { commandName: "Replace Linked Smart Objects" });
+  // 更新 HTML 中的进度列表
+  const progressElement = document.getElementById("progressList");
+  progressElement.innerHTML = `
+    <ul>${progressList.map(item => `<li>${item}</li>`).join("")}</ul>
+  `;
 
   app.showAlert("按名字替换链接智能对象完成！");
 };
-
-
 
 // 按钮事件监听
 document.getElementById("btnReplace").addEventListener("click", async () => {
   const textarea = document.getElementById("imageURLs");
   let input = textarea.value; // 获取 sp-textarea 的值
-  input = input.replace(/'|"/g,"");
+  input = input.replace(/'|"/g, "");
   if (!input) {
     app.showAlert("请输入至少一张图片的路径。");
     return;
   }
 
   // 将用户输入的图片路径解析为数组
-const imagePaths = input.split(/\r|\n/).map(url => url.trim()).filter(url => url);
-console.log("Input image paths:", imagePaths);
+  const imagePaths = input.split(/\r|\n/).map(url => url.trim()).filter(url => url);
+  console.log("Input image paths:", imagePaths);
 
-for (let path of imagePaths) {
-  try {
-    let entry = await fs.getEntryWithUrl("file:" + path);
-    console.log(`File exists for path: ${path}`, entry);
-  } catch (error) {
-    console.error(`Invalid file path: ${path}`, error);
-    app.showAlert(`文件路径无效: ${path}`);
+  for (let path of imagePaths) {
+    try {
+      let entry = await fs.getEntryWithUrl("file:" + path);
+      console.log(`File exists for path: ${path}`, entry);
+    } catch (error) {
+      console.error(`Invalid file path: ${path}`, error);
+      app.showAlert(`文件路径无效: ${path}`);
+    }
   }
-}
-
-
   // 按名字顺序替换链接智能对象
   const layerNames = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
   await replaceLinkedLayersByName(layerNames, imagePaths);
-
-  // 更新图层列表显示
-  const allLayers = getAllLayers();
-  const sortedNames = allLayers.map(layer => layer.name).sort();
-  document.getElementById("layers").innerHTML = `
-    <ul>${sortedNames.map(name => `<li>${name}</li>`).join("")}</ul>
-  `;
 });

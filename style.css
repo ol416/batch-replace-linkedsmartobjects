@@ -1,5 +1,5 @@
 body {
-    color: rgb(177, 177, 177);
+    color: rgb(66, 66, 66);
     padding: 0 16px;
   }
   li:before {
@@ -7,7 +7,7 @@ body {
     width: 3em;
   }
 
-  #layers {
+  #progressList {
     border: 1px solid #d1d1d1;
     border-radius: 4px;
     padding: 16px;
