@@ -61,6 +61,8 @@ const replaceLinkedSmartObject = async (layerID, filePath) => {
 
     // 通过 ID 选择目标图层
     await selectLayerById(layerID);
+    let layer = app.activeDocument.activeLayer;
+    let originlayername = layer.name;
 
     // 验证图层是否成功选择
     if (app.activeDocument.activeLayer.id !== layerID) {
@@ -89,6 +91,8 @@ const replaceLinkedSmartObject = async (layerID, filePath) => {
       {}
     );
 
+    layer.name = originlayername;
+    console.log(`Restored layer name to: ${originlayername}`);
     console.log(`Successfully replaced content for layer ID ${layerID}.`);
   } catch (error) {
     console.error(`Error replacing linked smart object for layer ID ${layerID}:`, error);
