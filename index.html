@@ -28,6 +28,10 @@
     #btnReplace {
       margin-top: 10px;
     }
+    dialog {
+      width: 480px;
+      height: 240px;
+    }
   </style>
 </head>
 <body>
@@ -48,5 +52,18 @@
   <!-- Display layer names -->
   <h2>替换图层</h2>
   <div id="progressList"></div>
+
+  <!-- Custom Dialog -->
+  <dialog id="dlgConfirm">
+    <form method="dialog">
+      <sp-heading>确认替换</sp-heading>
+      <sp-divider size="large"></sp-divider>
+      <sp-body>确认要替换链接智能对象吗？</sp-body>
+      <footer>
+        <sp-button id="btnCancel" variant="secondary" quiet>取消</sp-button>
+        <sp-button id="btnConfirm" variant="cta">确认</sp-button>
+      </footer>
+    </form>
+  </dialog>
 </body>
 </html>
