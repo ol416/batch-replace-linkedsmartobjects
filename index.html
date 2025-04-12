@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,6 +25,9 @@
     sp-textarea {
       width: 100%;
     }
+    #btnReplace {
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -34,13 +37,13 @@
   <sp-textarea
     id="imageURLs"
     label="Enter image paths (one per line):"
-    placeholder="Example: E:/images/1.jpg"
+    placeholder="例如: E:/images/1.jpg"
     rows="10"
     resize="vertical">
   </sp-textarea>
 
   <!-- Replace Layers button -->
-  <button id="btnReplace">Replace Linked Layers</button>
+  <sp-button id="btnReplace" variant="primary">替换链接图层</sp-button>
 
   <!-- Display layer names -->
   <h2>替换图层</h2>
