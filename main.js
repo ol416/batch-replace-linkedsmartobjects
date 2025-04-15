@@ -207,9 +207,12 @@ document.getElementById("btnAddSearchField").addEventListener("click", () => {
   const newSearchField = document.createElement("div");
   newSearchField.classList.add("searchField");
   newSearchField.innerHTML = `
-    <sp-textfield class="searchText" placeholder="搜索文字"></sp-textfield>
-    <sp-textfield class="replaceText" placeholder="替换文字"></sp-textfield>
-    <sp-checkbox class="regexSearch">正则</sp-checkbox>
+    <sp-textarea class="searchText" placeholder="搜索文字"></sp-textarea>
+    <sp-textarea class="replaceText" placeholder="替换文字"></sp-textarea>
+    <div>
+      <sp-checkbox class="regexSearch">正则</sp-checkbox>
+      <sp-checkbox class="replaceAll">全部替换</sp-checkbox>  
+    </div>
     <sp-button class="removeSearchField" variant="secondary">-</sp-button>
   `;
   searchFields.appendChild(newSearchField);
@@ -229,7 +232,8 @@ document.getElementById("btnBatchReplaceText").addEventListener("click", async (
     const searchText = searchField.querySelector(".searchText").value;
     const replaceText = searchField.querySelector(".replaceText").value;
     const regexSearch = searchField.querySelector(".regexSearch").checked;
-    replacements.push({ searchText, replaceText, regexSearch });
+    const replaceAll = searchField.querySelector(".replaceAll").checked;
+    replacements.push({ searchText, replaceText, regexSearch, replaceAll });
   });
 
   // Get all text layers
@@ -249,13 +253,23 @@ document.getElementById("btnBatchReplaceText").addEventListener("click", async (
             return;
           }
           if (match) {
-            change_text(layer, layer.textItem.contents.replace(regex, replacement.replaceText));
-            layer.name = layer.name.replace(regex, replacement.replaceText);
+            if (replacement.replaceAll) {
+              change_text(layer, replacement.replaceText);
+              layer.name = layer.name.replace(regex, replacement.replaceText);
+            } else {
+              change_text(layer, layer.textItem.contents.replace(regex, replacement.replaceText));
+              layer.name = layer.name.replace(regex, replacement.replaceText);
+            }
           }
         } else {
           if (layer.textItem.contents.includes(replacement.searchText)) { // Fuzzy search
-            change_text(layer, layer.textItem.contents.replace(replacement.searchText, replacement.replaceText));
-            layer.name = layer.name.replace(replacement.searchText, replacement.replaceText);
+            if (replacement.replaceAll) {
+              change_text(layer, replacement.replaceText);
+              layer.name = layer.name.replace(replacement.searchText, replacement.replaceText);
+            } else {
+              change_text(layer, layer.textItem.contents.replace(replacement.searchText, replacement.replaceText));
+              layer.name = layer.name.replace(replacement.searchText, replacement.replaceText);              
+            }
           }
         }
       }

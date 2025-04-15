@@ -49,10 +49,13 @@
   <div id="batchReplace">
     <div id="searchFields">
       <div class="searchField">
-        <sp-textfield class="searchText" placeholder="搜索文字"></sp-textfield>
-        <sp-textfield class="replaceText" placeholder="替换文字"></sp-textfield>
-        <sp-checkbox class="regexSearch">正则</sp-checkbox>
-        <sp-button class="removeSearchField" variant="secondary">-</sp-button>
+        <sp-textarea class="searchText" placeholder="搜索文字"></sp-textarea>
+        <sp-textarea class="replaceText" placeholder="替换文字"></sp-textarea>
+        <div>
+          <sp-checkbox class="regexSearch">正则</sp-checkbox>
+          <sp-checkbox class="replaceAll">全部替换</sp-checkbox>
+        </div>
+        <!-- <sp-button class="removeSearchField" variant="secondary">-</sp-button> -->
       </div>
     </div>
     <sp-button id="btnAddSearchField" variant="primary">+</sp-button>
