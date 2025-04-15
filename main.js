@@ -7,6 +7,15 @@ const { batchPlay } = require("photoshop").action;
 // \\ / : * ? " < > | #
 const FORBIDDEN_CHARACTERS = /[#]/;
 
+function change_text (layer, text) {
+    const point_size = layer.textItem.characterStyle.size;
+
+    layer.textItem.contents = text;
+    if (layer.textItem.characterStyle.size !== point_size) {
+        layer.textItem.characterStyle.size = point_size * (point_size / layer.textItem.characterStyle.size);
+    }
+}
+
 // 通过 ID 选择图层
 const selectLayerById = async (layerID) => {
   try {
@@ -234,17 +243,19 @@ document.getElementById("btnBatchReplaceText").addEventListener("click", async (
         if (replacement.regexSearch) {
           try {
             const regex = new RegExp(replacement.searchText);
-            match = regex.test(layer.text);
+            match = regex.test(layer.textItem.contents);
           } catch (e) {
             app.showAlert("正则表达式错误: " + e.message);
             return;
           }
           if (match) {
-            layer.text = layer.text.replace(regex, replacement.replaceText);
+            change_text(layer, layer.textItem.contents.replace(regex, replacement.replaceText));
+            layer.name = layer.name.replace(regex, replacement.replaceText);
           }
         } else {
-          if (layer.text.includes(replacement.searchText)) { // Fuzzy search
-            layer.text = layer.text.replace(replacement.searchText, replacement.replaceText);
+          if (layer.textItem.contents.includes(replacement.searchText)) { // Fuzzy search
+            change_text(layer, layer.textItem.contents.replace(replacement.searchText, replacement.replaceText));
+            layer.name = layer.name.replace(replacement.searchText, replacement.replaceText);
           }
         }
       }
@@ -270,13 +281,13 @@ document.getElementById("btnDetectLayers").addEventListener("click", async () =>
       if (regexSearch) {
         try {
           const regex = new RegExp(searchText);
-          match = regex.test(layer.text);
+          match = regex.test(layer.textItem.contents);
         } catch (e) {
           app.showAlert("正则表达式错误: " + e.message);
           return;
         }
       } else {
-        match = layer.text.includes(searchText); // Fuzzy search
+        match = layer.textItem.contents.includes(searchText); // Fuzzy search
       }
 
       if (match && !detectedLayers.includes(layer)) {
