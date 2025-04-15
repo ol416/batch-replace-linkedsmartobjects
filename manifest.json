@@ -5,7 +5,7 @@
   "main": "index.html",
   "host": {
     "app": "PS",
-    "minVersion": "23.0.0",
+    "minVersion": "23.3.0",
     "data": {
       "apiVersion": 2
     }
@@ -46,12 +46,12 @@
         "height": 2000
       },
       "preferredDockedSize": {
-        "width": 500,
-        "height": 500
+        "width": 600,
+        "height": 800
       },
       "preferredFloatingSize": {
-        "width": 500,
-        "height": 500
+        "width": 600,
+        "height": 800
       },
       "icons": [
         {
