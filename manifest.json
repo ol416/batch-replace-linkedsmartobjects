@@ -46,12 +46,12 @@
         "height": 2000
       },
       "preferredDockedSize": {
-        "width": 230,
-        "height": 300
+        "width": 500,
+        "height": 500
       },
       "preferredFloatingSize": {
-        "width": 230,
-        "height": 300
+        "width": 500,
+        "height": 500
       },
       "icons": [
         {

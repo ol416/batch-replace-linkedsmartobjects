@@ -72,7 +72,10 @@ const replaceLinkedSmartObject = async (layerID, filePath) => {
     console.log(`Layer with ID ${layerID} selected successfully.`);
 
     // 验证文件路径是否正确
-    let entry = await fs.getEntryWithUrl("file:" + filePath);
+    // let entry = await fs.getEntryWithUrl("file:" + filePath); // 原代码
+    // 处理特殊字符
+    const encodedFilePath = encodeURI(filePath);
+    let entry = await fs.getEntryWithUrl("file:" + encodedFilePath);
     console.log("File entry:", entry);
 
     let token = await fs.createSessionToken(entry);
@@ -174,7 +177,10 @@ document.getElementById("btnReplace").addEventListener("click", async () => {
 
   for (let path of imagePaths) {
     try {
-      let entry = await fs.getEntryWithUrl("file:" + path);
+      // let entry = await fs.getEntryWithUrl("file:" + path); // 原代码
+      // 处理特殊字符
+      const encodedPath = encodeURI(path);
+      let entry = await fs.getEntryWithUrl("file:" + encodedPath);
       console.log(`File exists for path: ${path}`, entry);
     } catch (error) {
       console.error(`Invalid file path: ${path}`, error);
@@ -184,4 +190,105 @@ document.getElementById("btnReplace").addEventListener("click", async () => {
   // 按名字顺序替换链接智能对象
   const layerNames = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
   await replaceLinkedLayersByName(layerNames, imagePaths);
+});
+
+// Add search field
+document.getElementById("btnAddSearchField").addEventListener("click", () => {
+  const searchFields = document.getElementById("searchFields");
+  const newSearchField = document.createElement("div");
+  newSearchField.classList.add("searchField");
+  newSearchField.innerHTML = `
+    <sp-textfield class="searchText" placeholder="搜索文字"></sp-textfield>
+    <sp-textfield class="replaceText" placeholder="替换文字"></sp-textfield>
+    <sp-checkbox class="regexSearch">正则</sp-checkbox>
+    <sp-button class="removeSearchField" variant="secondary">-</sp-button>
+  `;
+  searchFields.appendChild(newSearchField);
+
+  // Add event listener to the remove button
+  newSearchField.querySelector(".removeSearchField").addEventListener("click", () => {
+    newSearchField.remove();
+  });
+});
+
+// Batch replace text
+document.getElementById("btnBatchReplaceText").addEventListener("click", async () => {
+  const searchFields = document.querySelectorAll(".searchField");
+  const replacements = [];
+
+  searchFields.forEach(searchField => {
+    const searchText = searchField.querySelector(".searchText").value;
+    const replaceText = searchField.querySelector(".replaceText").value;
+    const regexSearch = searchField.querySelector(".regexSearch").checked;
+    replacements.push({ searchText, replaceText, regexSearch });
+  });
+
+  // Get all text layers
+  const allLayers = getAllLayers();
+  const textLayers = allLayers.filter(layer => layer.kind === constants.LayerKind.TEXT);
+
+  await executeAsModal(async () => {
+    for (const layer of textLayers) {
+      for (const replacement of replacements) {
+        let match = false;
+        if (replacement.regexSearch) {
+          try {
+            const regex = new RegExp(replacement.searchText);
+            match = regex.test(layer.text);
+          } catch (e) {
+            app.showAlert("正则表达式错误: " + e.message);
+            return;
+          }
+          if (match) {
+            layer.text = layer.text.replace(regex, replacement.replaceText);
+          }
+        } else {
+          if (layer.text.includes(replacement.searchText)) { // Fuzzy search
+            layer.text = layer.text.replace(replacement.searchText, replacement.replaceText);
+          }
+        }
+      }
+    }
+  }, { commandName: "Batch Replace Text" });
+
+  app.showAlert("批量替换文字完成！");
+});
+
+// Detect layers
+document.getElementById("btnDetectLayers").addEventListener("click", async () => {
+  const searchFields = document.querySelectorAll(".searchField");
+  const allLayers = getAllLayers();
+  const textLayers = allLayers.filter(layer => layer.kind === constants.LayerKind.TEXT);
+  let detectedLayers = [];
+
+  searchFields.forEach(searchField => {
+    const searchText = searchField.querySelector(".searchText").value;
+    const regexSearch = searchField.querySelector(".regexSearch").checked;
+
+    textLayers.forEach(layer => {
+      let match = false;
+      if (regexSearch) {
+        try {
+          const regex = new RegExp(searchText);
+          match = regex.test(layer.text);
+        } catch (e) {
+          app.showAlert("正则表达式错误: " + e.message);
+          return;
+        }
+      } else {
+        match = layer.text.includes(searchText); // Fuzzy search
+      }
+
+      if (match && !detectedLayers.includes(layer)) {
+        detectedLayers.push(layer);
+      }
+    });
+  });
+
+  if (detectedLayers.length > 0) {
+    const layerNames = detectedLayers.map(layer => layer.name).join(", ");
+    app.showAlert("检测到以下图层: " + layerNames);
+  } else {
+    app.showAlert("未检测到匹配的图层。");
+  }
 });

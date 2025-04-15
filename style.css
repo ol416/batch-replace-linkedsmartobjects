@@ -26,4 +26,23 @@ body {
      min-height: 50px; /* 设置最小高度 */
      width:100%
   }
-  
+
+  #batchReplace {
+    margin-top: 20px;
+  }
+
+  .searchField {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .searchText,
+  .replaceText {
+    width: 200px;
+    margin-right: 10px;
+  }
+
+  .removeSearchField {
+    margin-left: 10px;
+  }
