@@ -3,6 +3,9 @@ const { localFileSystem: fs } = require("uxp").storage;
 const { executeAsModal } = require("photoshop").core;
 const { batchPlay } = require("photoshop").action;
 
+// Forbidden characters in file paths
+// \\ / : * ? " < > | #
+const FORBIDDEN_CHARACTERS = /[#]/;
 
 // 通过 ID 选择图层
 const selectLayerById = async (layerID) => {
@@ -11,9 +14,7 @@ const selectLayerById = async (layerID) => {
       [
         {
           _obj: "select", // 表示选择操作
-          _target: [
-            { _ref: "layer", _id: layerID }, // 目标图层
-          ],
+          _target: [{ _ref: "layer", _id: layerID }], // 目标图层
           makeVisible: false, // 可选，是否使图层可见
           _options: { dialogOptions: "dontDisplay" }, // 不显示任何对话框
         },
@@ -27,11 +28,10 @@ const selectLayerById = async (layerID) => {
   }
 };
 
-
 // 获取所有图层（包括组内图层）
 const getAllLayers = (layers = app.activeDocument?.layers, allLayers = []) => {
   if (!layers) return [];
-  layers.forEach(layer => {
+  layers.forEach((layer) => {
     if (layer.kind !== constants.LayerKind.GROUP) {
       allLayers.push(layer);
     } else {
@@ -100,7 +100,6 @@ const replaceLinkedSmartObject = async (layerID, filePath) => {
   }
 };
 
-
 const validateLinkedSmartObject = (layer) => {
   if (!layer) return false;
 
@@ -119,7 +118,9 @@ const replaceLinkedLayersByName = async (layerNames, imagePaths) => {
   console.log("Target layers to replace:", targetLayers.map(layer => layer.name));
 
   // 验证目标图层是否为链接智能对象
-  let validLayers = targetLayers.filter(layer => validateLinkedSmartObject(layer));
+  let validLayers = targetLayers.filter((layer) =>
+    validateLinkedSmartObject(layer)
+  );
   if (validLayers.length === 0) {
     app.showAlert("未找到链接智能对象，请检查图层设置。");
     return;
@@ -152,7 +153,7 @@ const replaceLinkedLayersByName = async (layerNames, imagePaths) => {
   // 更新 HTML 中的进度列表
   const progressElement = document.getElementById("progressList");
   progressElement.innerHTML = `
-    <ul>${progressList.map(item => `<li>${item}</li>`).join("")}</ul>
+    <ul>${progressList.map((item) => `<li>${item}</li>`).join("")}</ul>
   `;
 
   app.showAlert("按名字替换链接智能对象完成！");
@@ -169,18 +170,20 @@ document.getElementById("btnReplace").addEventListener("click", async () => {
   }
 
   // 将用户输入的图片路径解析为数组
-  const imagePaths = input.split(/\r|\n/).map(url => url.trim()).filter(url => url);
+  const imagePaths = input
+    .split(/\r|\n/)
+    .map((url) => url.trim())
+    .filter((url) => url);
   console.log("Input image paths:", imagePaths);
 
-  for (let path of imagePaths) {
-    try {
-      let entry = await fs.getEntryWithUrl("file:" + path);
-      console.log(`File exists for path: ${path}`, entry);
-    } catch (error) {
-      console.error(`Invalid file path: ${path}`, error);
-      app.showAlert(`文件路径无效: ${path}`);
+  // Early validation for forbidden characters
+  for (const path of imagePaths) {
+    if (FORBIDDEN_CHARACTERS.test(path)) {
+      app.showAlert(`文件路径中包含无效字符。请避免使用以下字符: ${FORBIDDEN_CHARACTERS.source.replace(/[\[\]]/g, '')}，路径： ${path}`);
+      return; // Stop execution if invalid characters are found
     }
   }
+
   // 按名字顺序替换链接智能对象
   const layerNames = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
   await replaceLinkedLayersByName(layerNames, imagePaths);
