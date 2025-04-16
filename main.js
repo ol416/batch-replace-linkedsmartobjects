@@ -149,7 +149,7 @@ const replaceLinkedLayersByName = async (layerNames, imagePaths) => {
       await replaceLinkedSmartObject(layer.id, imagePaths[i]);
       // 更新转换过程
     }
-  }, { commandName: "Replace Linked Smart Objects" });
+  }, { commandName: "替换链接的智能对象" });
   // 更新 HTML 中的进度列表
   const progressElement = document.getElementById("progressList");
   progressElement.innerHTML = `
