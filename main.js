@@ -187,4 +187,5 @@ document.getElementById("btnReplace").addEventListener("click", async () => {
   // 按名字顺序替换链接智能对象
   const layerNames = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
   await replaceLinkedLayersByName(layerNames, imagePaths);
+  textarea.value = "";
 });
