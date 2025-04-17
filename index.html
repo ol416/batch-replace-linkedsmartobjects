@@ -46,25 +46,27 @@
   <sp-button id="btnReplace" variant="primary">替换链接图层</sp-button>
 
   <h2>批量替换文字图层</h2>
-  <div id="batchReplace">
-    <div id="searchFields">
-      <div class="searchField">
-        <sp-textarea class="searchText" placeholder="搜索文字"></sp-textarea>
-        <sp-textarea class="replaceText" placeholder="替换文字"></sp-textarea>
-        <div>
-          <sp-checkbox class="regexSearch">正则</sp-checkbox>
-          <sp-checkbox class="replaceAll">全部替换</sp-checkbox>
+        <div id="batchReplace">
+          <div id="searchFields" style="overflow: auto; max-height: 500px;">
+            <div class="searchField">
+              <sp-textarea class="searchText" placeholder="搜索文字"></sp-textarea>
+              <sp-textarea class="replaceText" placeholder="替换文字"></sp-textarea>
+              <div>
+                <sp-checkbox class="regexSearch">正则</sp-checkbox>
+                <sp-checkbox class="replaceAll">全部替换</sp-checkbox>
+              </div>
+              <!-- <sp-button class="removeSearchField" variant="secondary">-</sp-button> -->
+            </div>
+          </div>
+          <sp-button id="btnAddSearchField" variant="primary">+</sp-button>
+          <sp-button id="btnDetectLayers" variant="primary">检测图层</sp-button>
+          <sp-button id="btnBatchReplaceText" variant="primary">批量替换文字</sp-button>
         </div>
-        <!-- <sp-button class="removeSearchField" variant="secondary">-</sp-button> -->
-      </div>
-    </div>
-    <sp-button id="btnAddSearchField" variant="primary">+</sp-button>
-    <sp-button id="btnDetectLayers" variant="primary">检测图层</sp-button>
-    <sp-button id="btnBatchReplaceText" variant="primary">批量替换文字</sp-button>
-  </div>
 
   <!-- Display layer names -->
-  <h2>替换图层</h2>
-  <div id="progressList"></div>
+  <div style="display: none;">
+    <h2>替换图层</h2>
+    <div id="progressList"></div>
+  </div>
 </body>
 </html>
