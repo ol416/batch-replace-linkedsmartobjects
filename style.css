@@ -46,3 +46,9 @@ body {
   .removeSearchField {
     margin-left: 10px;
   }
+
+
+  sp-textarea {
+    overflow: auto;
+    padding-right: 5px; /* 避免滚动条覆盖文字 */
+  }
